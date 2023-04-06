@@ -1,7 +1,7 @@
 import { json } from './utils/responses';
 
-const windowLength = 20 * 1000; // 1 minute
-const maxRequests = 5; // 240 requests per minute
+const windowLength = 20 * 1000; // 20 seconds
+const maxRequests = 10; // 10 requests per minute
 
 const dateIsInWindow = (date: Date) => {
     const now = new Date();
