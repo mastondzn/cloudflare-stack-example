@@ -1,0 +1,26 @@
+{
+    "name": "@cloudflare-example/api",
+    "version": "0.0.1",
+    "private": true,
+    "scripts": {
+        "lint": "eslint .",
+        "lint:fix": "eslint . --fix",
+        "db:generate": "drizzle-kit generate:sqlite",
+        "db:up": "drizzle-kit up:sqlite",
+        "db:init": "wrangler d1 execute CF_STACK_EXAMPLE --file=./migrations/0000_curly_leopardon.sql",
+        "dev": "wrangler dev"
+    },
+    "devDependencies": {
+        "@cloudflare-example/eslint-config-custom": "workspace:*",
+        "@cloudflare-example/tsconfig-custom": "workspace:*",
+        "@cloudflare/workers-types": "^4.20230404.0",
+        "drizzle-kit": "^0.17.4",
+        "eslint": "^8.28.0",
+        "eslint-define-config": "^1.17.0",
+        "wrangler": "^2.14.0"
+    },
+    "dependencies": {
+        "drizzle-orm": "0.23.6",
+        "hono": "^3.1.5"
+    }
+}

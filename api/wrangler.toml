@@ -1,0 +1,19 @@
+name = "cloudflare-example-api"
+main = "src/index.ts"
+compatibility_date = "2023-04-06"
+workers_dev = false
+routes = ["cf-example.synopsis.gg/api*", "cf-example.synopsis.gg/api/*"]
+
+[[ d1_databases ]]
+binding = "D1_DB"
+database_name = "CF_STACK_EXAMPLE"
+database_id = "d4120415-e672-4b3f-ad0c-84d2a1c71255"
+
+[durable_objects]
+bindings = [
+{ name = "RATELIMITER", class_name = "RateLimiterDurableObject" }
+]
+
+[[migrations]]
+tag = "v1"
+new_classes = ["RateLimiterDurableObject"]
