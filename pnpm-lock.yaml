@@ -18,17 +18,17 @@ importers:
 
   api:
     specifiers:
+      '@cloudflare-example/db': workspace:*
       '@cloudflare-example/eslint-config-custom': workspace:*
       '@cloudflare-example/tsconfig-custom': workspace:*
       '@cloudflare/workers-types': ^4.20230404.0
       drizzle-kit: ^0.17.4
-      drizzle-orm: 0.23.6
       eslint: ^8.28.0
       eslint-define-config: ^1.17.0
       hono: ^3.1.5
       wrangler: ^2.14.0
     dependencies:
-      drizzle-orm: 0.23.6_d6kfmz7iimj77zn6ngnieuf3tm
+      '@cloudflare-example/db': link:../packages/db
       hono: 3.1.5
     devDependencies:
       '@cloudflare-example/eslint-config-custom': link:../packages/eslint-config-custom
@@ -38,6 +38,23 @@ importers:
       eslint: 8.37.0
       eslint-define-config: 1.17.0
       wrangler: 2.14.0
+
+  packages/db:
+    specifiers:
+      '@cloudflare-example/eslint-config-custom': workspace:*
+      '@cloudflare-example/tsconfig-custom': workspace:*
+      '@cloudflare/workers-types': ^4.20230404.0
+      drizzle-orm: 0.23.6
+      eslint: ^8.28.0
+      eslint-define-config: ^1.17.0
+    dependencies:
+      drizzle-orm: 0.23.6_d6kfmz7iimj77zn6ngnieuf3tm
+    devDependencies:
+      '@cloudflare-example/eslint-config-custom': link:../eslint-config-custom
+      '@cloudflare-example/tsconfig-custom': link:../tsconfig-custom
+      '@cloudflare/workers-types': 4.20230404.0
+      eslint: 8.37.0
+      eslint-define-config: 1.17.0
 
   packages/eslint-config-custom:
     specifiers:

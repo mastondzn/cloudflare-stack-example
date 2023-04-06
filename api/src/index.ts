@@ -1,8 +1,8 @@
-import { eq } from 'drizzle-orm/expressions';
 import { Hono } from 'hono';
 import { logger } from 'hono/logger';
 
-import { countries, createDb } from './db';
+import { Database } from '@cloudflare-example/db';
+
 import { parseRateLimiterResult } from './ratelimiter';
 import type { Bindings } from './bindings';
 
@@ -33,67 +33,32 @@ app.use('*', async (ctx, next) => {
 
 app.get('/api/get/:country?', async (ctx) => {
     const country = ctx.req.param('country') || ctx.req.headers.get('CF-IPCountry') || 'fallback';
-    const db = createDb(ctx.env.D1_DB);
+    const db = new Database(ctx.env.D1_DB);
 
-    const result = await db
-        .select()
-        .from(countries)
-        .where(eq(countries.country_name, country))
-        .get();
+    const data = await db.getCountry(country);
 
-    if (!result) {
-        return ctx.json({ country_name: country, count: 0 });
+    if (!data) {
+        return ctx.json({ error: `country ${country} not found in database` }, 404);
     }
 
-    return ctx.json(result);
+    return ctx.json(data);
 });
 
 app.get('/api/increment', async (ctx) => {
     const country = ctx.req.headers.get('CF-IPCountry') || 'fallback';
-    const db = createDb(ctx.env.D1_DB);
+    const db = new Database(ctx.env.D1_DB);
 
-    const result = await db
-        .select()
-        .from(countries)
-        .where(eq(countries.country_name, country))
-        .get();
+    const data = await db.getCountry(country);
 
-    if (!result) {
-        await db.insert(countries).values({ country_name: country }).run();
+    if (!data) {
+        await db.insertCountry(country);
+        await db.setCount(country, 1);
+        return ctx.json({ country_name: country, count: 1 });
     }
 
-    console.log(result);
+    await db.setCount(country, data.count + 1);
 
-    return ctx.json(
-        await db
-            .update(countries)
-            .set({ count: result.count + 1 })
-            .where(eq(countries.country_name, country))
-            .get()
-    );
-});
-
-app.get('/api/decrement', async (ctx) => {
-    const country = ctx.req.headers.get('CF-IPCountry') || 'fallback';
-    const db = createDb(ctx.env.D1_DB);
-
-    const result = await db
-        .select()
-        .from(countries)
-        .where(eq(countries.country_name, country))
-        .get();
-
-    if (!result) {
-        await db.insert(countries).values({ country_name: country }).run();
-    }
-
-    return ctx.json(
-        await db
-            .update(countries)
-            .set({ count: result.count - 1 })
-            .where(eq(countries.country_name, country))
-            .get()
-    );
+    return ctx.json({ country_name: country, count: data.count + 1 });
 });
 
 export default app;
