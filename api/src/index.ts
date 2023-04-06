@@ -1,4 +1,5 @@
 import { Hono } from 'hono';
+import { cors } from 'hono/cors';
 import { logger } from 'hono/logger';
 
 import { Database } from '@cloudflare-example/db';
@@ -9,6 +10,7 @@ import type { Bindings } from './bindings';
 const app = new Hono<{ Bindings: Bindings }>();
 
 app.use('*', logger());
+app.use('*', cors());
 app.use('*', async (ctx, next) => {
     const rateLimiterIdentifier =
         ctx.req.headers.get('CF-IPCountry') ||
@@ -61,5 +63,12 @@ app.get('/api/increment', async (ctx) => {
     return ctx.json({ country_name: country, count: data.count + 1 });
 });
 
+app.get('/api/leaderboard', async (ctx) => {
+    const db = new Database(ctx.env.D1_DB);
+
+    const data = await db.getLeaderboard();
+
+    return ctx.json(data);
+});
 export default app;
 export { RateLimiterDurableObject } from './ratelimiter';
