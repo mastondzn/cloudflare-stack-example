@@ -39,6 +39,32 @@ export const useCountriesQuery = (options?: {
     });
 };
 
+export const useLeaderboardQuery = (options?: {
+    onError?: (err: unknown) => void;
+    onSuccess?: (data: CountryData[]) => void;
+}) => {
+    return useQuery<CountryData[], unknown, CountryData[], readonly ['leaderboard']>({
+        queryKey: ['leaderboard'] as const,
+        queryFn: async () => {
+            const res = await fetch(`${apiBaseUrl}/api/leaderboard`);
+
+            const data = (await res.json()) as
+                | { country_name: string; count: number }[]
+                | { error: string };
+
+            console.log(data);
+
+            if (res.ok && Array.isArray(data)) {
+                return data;
+            }
+
+            throw new Error(JSON.stringify(data));
+        },
+        onError: options?.onError as () => void,
+        onSuccess: options?.onSuccess as (data: CountryData[]) => void,
+    });
+};
+
 export const useIncrementMutation = (options?: {
     onError?: (err: unknown) => void;
     onSuccess?: (data: CountryData) => void;

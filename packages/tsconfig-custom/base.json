@@ -18,9 +18,6 @@
         "noUnusedLocals": true,
         "noUnusedParameters": true,
 
-        "verbatimModuleSyntax": true,
-        "checkJs": true,
-
         "esModuleInterop": true,
         "skipLibCheck": true,
         "forceConsistentCasingInFileNames": true

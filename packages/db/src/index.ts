@@ -37,7 +37,7 @@ export class Database {
             .select()
             .from(countries)
             .orderBy(desc(countries.count))
-            .limit(20)
+            .limit(10)
             .all();
     }
 }
