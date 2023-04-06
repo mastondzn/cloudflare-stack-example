@@ -1,5 +1,5 @@
 import { drizzle, type DrizzleD1Database } from 'drizzle-orm/d1';
-import { eq } from 'drizzle-orm/expressions';
+import { desc, eq } from 'drizzle-orm/expressions';
 
 import { countries, type Country } from './schema';
 
@@ -30,6 +30,15 @@ export class Database {
 
     async insertCountry(countryName: string) {
         return await this.db.insert(countries).values({ country_name: countryName }).run();
+    }
+
+    async getLeaderboard(): Promise<Country[]> {
+        return await this.db
+            .select()
+            .from(countries)
+            .orderBy(desc(countries.count))
+            .limit(20)
+            .all();
     }
 }
 
