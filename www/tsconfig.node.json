@@ -1,4 +1,5 @@
 {
+    "extends": "@cloudflare-example/tsconfig-custom/esm.json",
     "compilerOptions": {
         "composite": true,
         "module": "ESNext",
