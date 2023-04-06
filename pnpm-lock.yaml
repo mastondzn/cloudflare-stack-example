@@ -39,6 +39,18 @@ importers:
       eslint-define-config: 1.17.0
       wrangler: 2.14.0
 
+  packages/countries:
+    specifiers:
+      '@cloudflare-example/eslint-config-custom': workspace:*
+      '@cloudflare-example/tsconfig-custom': workspace:*
+      eslint: ^8.28.0
+      eslint-define-config: ^1.17.0
+    devDependencies:
+      '@cloudflare-example/eslint-config-custom': link:../eslint-config-custom
+      '@cloudflare-example/tsconfig-custom': link:../tsconfig-custom
+      eslint: 8.37.0
+      eslint-define-config: 1.17.0
+
   packages/db:
     specifiers:
       '@cloudflare-example/eslint-config-custom': workspace:*
@@ -101,9 +113,9 @@ importers:
   www:
     specifiers:
       '@chakra-ui/react': ^2.5.5
-      '@cloudflare-example/countries': workspace:^0.0.1
-      '@cloudflare-example/eslint-config-custom': workspace:^0.0.1
-      '@cloudflare-example/tsconfig-custom': workspace:^0.0.1
+      '@cloudflare-example/countries': workspace:*
+      '@cloudflare-example/eslint-config-custom': workspace:*
+      '@cloudflare-example/tsconfig-custom': workspace:*
       '@emotion/react': ^11.10.6
       '@emotion/styled': ^11.10.6
       '@tanstack/react-query': ^4.28.0
