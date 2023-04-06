@@ -40,7 +40,7 @@ app.get('/api/get/:country?', async (ctx) => {
     const data = await db.getCountry(country);
 
     if (!data) {
-        return ctx.json({ error: `country ${country} not found in database` }, 404);
+        return ctx.json({ error: `country ${country} not found in database`, country }, 404);
     }
 
     return ctx.json(data);

@@ -24,9 +24,13 @@ export const useCountriesQuery = (options?: {
             const res = await fetch(url);
             const data = (await res.json()) as
                 | { country_name: string; count: number }
-                | { error: string };
+                | { error: string; country?: string };
 
             console.log(data);
+
+            if (res.status === 404 && 'country' in data) {
+                return { country_name: data.country, count: 0 };
+            }
 
             if (res.ok && 'country_name' in data) {
                 return data;
