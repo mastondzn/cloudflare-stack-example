@@ -94,7 +94,7 @@ export const App = () => {
                                             {countries[country.country_name] ||
                                                 country.country_name}
                                         </Td>
-                                        <Td>{count}</Td>
+                                        <Td>{country.count}</Td>
                                     </Tr>
                                 ))}
                             </Tbody>
