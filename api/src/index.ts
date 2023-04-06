@@ -1,7 +1,6 @@
 import { eq } from 'drizzle-orm/expressions';
 import { Hono } from 'hono';
 import { logger } from 'hono/logger';
-import { poweredBy } from 'hono/powered-by';
 
 import { countries, createDb } from './db';
 import { parseRateLimiterResult } from './ratelimiter';
@@ -9,7 +8,6 @@ import type { Bindings } from './bindings';
 
 const app = new Hono<{ Bindings: Bindings }>();
 
-app.use('*', poweredBy());
 app.use('*', logger());
 app.use('*', async (ctx, next) => {
     const rateLimiterIdentifier =
@@ -61,8 +59,10 @@ app.get('/api/increment', async (ctx) => {
         .get();
 
     if (!result) {
-        await db.insert(countries).values({ country_name: country }).get();
+        await db.insert(countries).values({ country_name: country }).run();
     }
+
+    console.log(result);
 
     return ctx.json(
         await db
@@ -84,7 +84,7 @@ app.get('/api/decrement', async (ctx) => {
         .get();
 
     if (!result) {
-        await db.insert(countries).values({ country_name: country }).get();
+        await db.insert(countries).values({ country_name: country }).run();
     }
 
     return ctx.json(
