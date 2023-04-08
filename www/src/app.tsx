@@ -17,12 +17,12 @@ import {
 } from '@chakra-ui/react';
 import { useState } from 'react';
 
-import { countries } from '@cloudflare-example/countries';
+import { getByCountryCode } from '@cloudflare-example/countries';
 
-import { useCountriesQuery, useIncrementMutation, useLeaderboardQuery } from './utils/query';
+import { useIncrementMutation, useSelfQuery } from './utils/query';
+import type { CountryData } from './utils/query';
 
 export const App = () => {
-    const [count, setCount] = useState(0);
     const toast = useToast({ position: 'bottom', isClosable: true });
 
     const handleError = (error: unknown) => {
@@ -44,17 +44,29 @@ export const App = () => {
         });
     };
 
-    const { data } = useCountriesQuery({
-        onSuccess: (data) => setCount(data.count),
-        onError: handleError,
+    const [leaderboard, setLeaderboard] = useState<Map<string, CountryData> | null>(null);
+    const [selfData, setSelfData] = useState<CountryData | null>(null);
+
+    useSelfQuery({
+        onSuccess: ({ self, leaderboard }) => {
+            setSelfData(self);
+            setLeaderboard(
+                new Map(leaderboard.map((country) => [country.country_code, country] as const))
+            );
+        },
     });
 
-    const { data: leaderboardData, refetch: refetchLeaderboard } = useLeaderboardQuery();
-
     const { mutate: increment } = useIncrementMutation({
-        onSuccess: (data) => {
-            setCount(data.count);
-            void refetchLeaderboard();
+        onSuccess: ({ count, country_code }) => {
+            setSelfData({ count, country_code });
+            if (!(leaderboard instanceof Map) || !leaderboard.has(country_code)) return;
+
+            const newLeaderboard = new Map(leaderboard);
+            newLeaderboard.set(country_code, {
+                country_code,
+                count,
+            });
+            setLeaderboard(newLeaderboard);
         },
         onError: handleError,
     });
@@ -62,11 +74,11 @@ export const App = () => {
     return (
         <Center h="100vh">
             <VStack>
-                {data ? (
+                {selfData ? (
                     <>
-                        <Text fontWeight="semibold" fontSize="lg">{`Country ${
-                            countries[data.country_name] || data.country_name
-                        } has a count of ${count}!`}</Text>
+                        <Text fontWeight="semibold" fontSize="lg">{`Country ${getByCountryCode(
+                            selfData.country_code
+                        )} has a count of ${selfData.count}!`}</Text>
                         <Button size="lg" onClick={() => increment()}>
                             {"Increment your country's count!"}
                         </Button>
@@ -77,7 +89,7 @@ export const App = () => {
 
                 <Box h="10vh" />
 
-                {leaderboardData && (
+                {leaderboard && (
                     <TableContainer>
                         <Table variant="simple" size="sm">
                             <TableCaption>Top 10 Countries</TableCaption>
@@ -88,13 +100,10 @@ export const App = () => {
                                 </Tr>
                             </Thead>
                             <Tbody>
-                                {leaderboardData.map((country) => (
-                                    <Tr key={country.country_name}>
-                                        <Td>
-                                            {countries[country.country_name] ||
-                                                country.country_name}
-                                        </Td>
-                                        <Td isNumeric={true}>{country.count}</Td>
+                                {[...leaderboard.values()].map(({ count, country_code }) => (
+                                    <Tr key={country_code}>
+                                        <Td>{getByCountryCode(country_code)}</Td>
+                                        <Td isNumeric={true}>{count}</Td>
                                     </Tr>
                                 ))}
                             </Tbody>

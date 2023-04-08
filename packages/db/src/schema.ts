@@ -2,7 +2,7 @@ import { integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 import type { InferModel } from 'drizzle-orm';
 
 export const countries = sqliteTable('countries', {
-    country_name: text('country_name').primaryKey(),
+    country_code: text('country_code').primaryKey(),
     count: integer('count').notNull().default(0),
 });
 

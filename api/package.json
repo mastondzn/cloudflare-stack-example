@@ -10,7 +10,8 @@
         "db:init": "wrangler d1 execute CF_STACK_EXAMPLE --file=./migrations/0000_curly_leopardon.sql",
         "dev": "wrangler dev",
         "local:db:init": "wrangler d1 execute CF_STACK_EXAMPLE --file=./migrations/0000_curly_leopardon.sql --local",
-        "local:dev": "wrangler dev --local --persist"
+        "local:dev": "wrangler dev --local --persist",
+        "typecheck": "tsc --noEmit"
     },
     "devDependencies": {
         "@cloudflare-example/eslint-config-custom": "workspace:*",
@@ -22,6 +23,7 @@
         "wrangler": "^2.14.0"
     },
     "dependencies": {
+        "@cloudflare-example/countries": "workspace:*",
         "@cloudflare-example/db": "workspace:*",
         "hono": "^3.1.5"
     }

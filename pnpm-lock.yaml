@@ -18,6 +18,7 @@ importers:
 
   api:
     specifiers:
+      '@cloudflare-example/countries': workspace:^0.0.1
       '@cloudflare-example/db': workspace:*
       '@cloudflare-example/eslint-config-custom': workspace:*
       '@cloudflare-example/tsconfig-custom': workspace:*
@@ -28,6 +29,7 @@ importers:
       hono: ^3.1.5
       wrangler: ^2.14.0
     dependencies:
+      '@cloudflare-example/countries': link:../packages/countries
       '@cloudflare-example/db': link:../packages/db
       hono: 3.1.5
     devDependencies:

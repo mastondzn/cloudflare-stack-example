@@ -16,7 +16,7 @@ export class Database {
         return await this.db
             .select()
             .from(countries)
-            .where(eq(countries.country_name, countryName))
+            .where(eq(countries.country_code, countryName))
             .get();
     }
 
@@ -24,12 +24,12 @@ export class Database {
         return await this.db
             .update(countries)
             .set({ count })
-            .where(eq(countries.country_name, countryName))
+            .where(eq(countries.country_code, countryName))
             .run();
     }
 
-    async insertCountry(countryName: string) {
-        return await this.db.insert(countries).values({ country_name: countryName }).run();
+    async insertCountry(countryCode: string) {
+        return await this.db.insert(countries).values({ country_code: countryCode }).run();
     }
 
     async getLeaderboard(): Promise<Country[]> {

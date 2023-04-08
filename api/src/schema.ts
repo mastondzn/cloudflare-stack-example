@@ -1,1 +1,1 @@
-export * from '@cloudflare-example/db';
+export { countries } from '@cloudflare-example/db';

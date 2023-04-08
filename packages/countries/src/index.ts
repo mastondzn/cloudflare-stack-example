@@ -1,4 +1,12 @@
-export const countries: Record<string, string> = {
+export const isValidCountry = (country: string): boolean => {
+    return countriesByCountryCode[country] !== undefined;
+};
+
+export const getByCountryCode = (countryCode: string): string => {
+    return countriesByCountryCode[countryCode] || countryCode;
+};
+
+export const countriesByCountryCode: Record<string, string> = {
     AF: 'Afghanistan',
     AL: 'Albania',
     DZ: 'Algeria',

@@ -2,6 +2,7 @@ import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 import { logger } from 'hono/logger';
 
+import { isValidCountry } from '@cloudflare-example/countries';
 import { Database } from '@cloudflare-example/db';
 
 import { parseRateLimiterResult } from './ratelimiter';
@@ -11,6 +12,7 @@ const app = new Hono<{ Bindings: Bindings }>();
 
 app.use('*', logger());
 app.use('*', cors());
+
 app.use('*', async (ctx, next) => {
     const rateLimiterIdentifier =
         ctx.req.headers.get('CF-IPCountry') ||
@@ -33,10 +35,14 @@ app.use('*', async (ctx, next) => {
     return await next();
 });
 
-app.get('/api/get/:country?', async (ctx) => {
-    const country = ctx.req.param('country') || ctx.req.headers.get('CF-IPCountry') || 'fallback';
-    const db = new Database(ctx.env.D1_DB);
+app.get('/api/countries/:country', async (ctx) => {
+    const country = ctx.req.param('country').toUpperCase();
 
+    if (!isValidCountry(country)) {
+        return ctx.json({ error: `country ${country} is not a known country`, country }, 400);
+    }
+
+    const db = new Database(ctx.env.D1_DB);
     const data = await db.getCountry(country);
 
     if (!data) {
@@ -46,29 +52,43 @@ app.get('/api/get/:country?', async (ctx) => {
     return ctx.json(data);
 });
 
-app.get('/api/increment', async (ctx) => {
-    const country = ctx.req.headers.get('CF-IPCountry') || 'fallback';
+app.get('/api/self', async (ctx) => {
+    const countryCode = ctx.req.headers.get('CF-IPCountry') || 'fallback';
     const db = new Database(ctx.env.D1_DB);
 
-    const data = await db.getCountry(country);
+    // eslint-disable-next-line prefer-const
+    let [countryData, leaderboardData] = await Promise.all([
+        db.getCountry(countryCode),
+        db.getLeaderboard(),
+    ]);
 
-    if (!data) {
-        await db.insertCountry(country);
-        await db.setCount(country, 1);
-        return ctx.json({ country_name: country, count: 1 });
+    if (!countryData && !isValidCountry(countryCode)) {
+        return ctx.json({ error: `country ${countryCode} is not a valid country code` }, 400);
     }
 
-    await db.setCount(country, data.count + 1);
+    if (!countryData) {
+        countryData = { country_code: countryCode, count: 0 };
+    }
 
-    return ctx.json({ country_name: country, count: data.count + 1 });
+    return ctx.json({ self: countryData, leaderboard: leaderboardData });
 });
 
-app.get('/api/leaderboard', async (ctx) => {
+app.get('/api/increment', async (ctx) => {
+    const countryCode = ctx.req.headers.get('CF-IPCountry') || 'fallback';
     const db = new Database(ctx.env.D1_DB);
 
-    const data = await db.getLeaderboard();
+    const data = await db.getCountry(countryCode);
 
-    return ctx.json(data);
+    if (!data) {
+        await db.insertCountry(countryCode);
+        await db.setCount(countryCode, 1);
+        return ctx.json({ country_code: countryCode, count: 1 });
+    }
+
+    await db.setCount(countryCode, data.count + 1);
+
+    return ctx.json({ country_code: countryCode, count: data.count + 1 });
 });
+
 export default app;
 export { RateLimiterDurableObject } from './ratelimiter';
