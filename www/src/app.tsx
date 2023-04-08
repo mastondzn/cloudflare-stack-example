@@ -45,7 +45,7 @@ export const App = () => {
             setSelfData({ count, countryCode });
 
             const hasCurrentCountry =
-                leaderboard && leaderboard.some((country) => country.countryCode < countryCode);
+                leaderboard && leaderboard.some((country) => country.countryCode === countryCode);
 
             if (!leaderboard || !(leaderboard.length < 10 || hasCurrentCountry)) {
                 return;
@@ -54,10 +54,10 @@ export const App = () => {
             // wutface
             setLeaderboard(
                 (hasCurrentCountry
-                    ? [...leaderboard, { count, countryCode }]
-                    : [...leaderboard].map((country) =>
+                    ? [...leaderboard].map((country) =>
                           country.countryCode === countryCode ? { countryCode, count } : country
                       )
+                    : [...leaderboard, { count, countryCode }]
                 )
                     .sort((a, b) => b.count - a.count)
                     .slice(0, 10)
