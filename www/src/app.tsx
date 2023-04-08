@@ -56,7 +56,7 @@ export const App = () => {
     return (
         <Center h="100vh">
             <VStack>
-                {selfData ? (
+                {selfData && leaderboard ? (
                     <>
                         <Text fontWeight="semibold" fontSize="lg">{`Country ${getByCountryCode(
                             selfData.country_code
@@ -68,33 +68,31 @@ export const App = () => {
                         >
                             {"Increment your country's count!"}
                         </Button>
+
+                        <Box h="10vh" />
+
+                        <TableContainer>
+                            <Table variant="simple" size="sm">
+                                <TableCaption>Top 10 Countries</TableCaption>
+                                <Thead>
+                                    <Tr>
+                                        <Th>Country</Th>
+                                        <Th>Count</Th>
+                                    </Tr>
+                                </Thead>
+                                <Tbody>
+                                    {[...leaderboard.values()].map(({ count, country_code }) => (
+                                        <Tr key={country_code}>
+                                            <Td>{getByCountryCode(country_code)}</Td>
+                                            <Td isNumeric={true}>{count}</Td>
+                                        </Tr>
+                                    ))}
+                                </Tbody>
+                            </Table>
+                        </TableContainer>
                     </>
                 ) : (
                     <Spinner />
-                )}
-
-                <Box h="10vh" />
-
-                {leaderboard && (
-                    <TableContainer>
-                        <Table variant="simple" size="sm">
-                            <TableCaption>Top 10 Countries</TableCaption>
-                            <Thead>
-                                <Tr>
-                                    <Th>Country</Th>
-                                    <Th>Count</Th>
-                                </Tr>
-                            </Thead>
-                            <Tbody>
-                                {[...leaderboard.values()].map(({ count, country_code }) => (
-                                    <Tr key={country_code}>
-                                        <Td>{getByCountryCode(country_code)}</Td>
-                                        <Td isNumeric={true}>{count}</Td>
-                                    </Tr>
-                                ))}
-                            </Tbody>
-                        </Table>
-                    </TableContainer>
                 )}
             </VStack>
         </Center>
