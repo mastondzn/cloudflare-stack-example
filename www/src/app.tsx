@@ -4,7 +4,6 @@ import {
     Center,
     Spinner,
     Table,
-    TableCaption,
     TableContainer,
     Tbody,
     Td,
@@ -82,11 +81,11 @@ export const App = () => {
                             {"Increment your country's count!"}
                         </Button>
 
-                        <Box h="10vh" />
+                        <Box h="35px" />
 
+                        <Text fontSize="sm">Top 10 Countries</Text>
                         <TableContainer>
                             <Table variant="simple" size="sm">
-                                <TableCaption>Top 10 Countries</TableCaption>
                                 <Thead>
                                     <Tr>
                                         <Th>#</Th>
