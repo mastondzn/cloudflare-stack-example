@@ -7,8 +7,8 @@
         "lint:fix": "eslint . --fix",
         "db:generate": "drizzle-kit generate:sqlite",
         "db:up": "drizzle-kit up:sqlite",
-        "db:init": "wrangler d1 execute CF_STACK_EXAMPLE --file=./migrations/0000_modern_mojo.sql",
-        "db:init:local": "wrangler d1 execute CF_STACK_EXAMPLE --file=./migrations/0000_modern_mojo.sql --local",
+        "db:init": "wrangler d1 execute CF_STACK_EXAMPLE --file=./migrations/0000_lowly_the_liberteens.sql",
+        "db:init:local": "wrangler d1 execute CF_STACK_EXAMPLE --file=./migrations/0000_lowly_the_liberteens.sql --local",
         "dev": "wrangler dev --local --persist",
         "typecheck": "tsc --noEmit"
     },
