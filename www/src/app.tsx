@@ -56,7 +56,7 @@ export const App = () => {
         },
     });
 
-    const { mutate: increment } = useIncrementMutation({
+    const { mutate: increment, isLoading: incrementMutationIsLoading } = useIncrementMutation({
         onSuccess: ({ count, country_code }) => {
             setSelfData({ count, country_code });
             if (!(leaderboard instanceof Map) || !leaderboard.has(country_code)) return;
@@ -79,7 +79,11 @@ export const App = () => {
                         <Text fontWeight="semibold" fontSize="lg">{`Country ${getByCountryCode(
                             selfData.country_code
                         )} has a count of ${selfData.count}!`}</Text>
-                        <Button size="lg" onClick={() => increment()}>
+                        <Button
+                            size="lg"
+                            onClick={() => increment()}
+                            isLoading={incrementMutationIsLoading}
+                        >
                             {"Increment your country's count!"}
                         </Button>
                     </>
