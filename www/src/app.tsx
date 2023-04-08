@@ -89,13 +89,15 @@ export const App = () => {
                                 <TableCaption>Top 10 Countries</TableCaption>
                                 <Thead>
                                     <Tr>
+                                        <Th>#</Th>
                                         <Th>Country</Th>
                                         <Th>Count</Th>
                                     </Tr>
                                 </Thead>
                                 <Tbody>
-                                    {leaderboard.map(({ count, countryCode }) => (
+                                    {leaderboard.map(({ count, countryCode }, i) => (
                                         <Tr key={countryCode}>
+                                            <Td isNumeric={true}>{i + 1}</Td>
                                             <Td>{getByCountryCode(countryCode)}</Td>
                                             <Td isNumeric={true}>{count}</Td>
                                         </Tr>
