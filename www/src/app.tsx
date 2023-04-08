@@ -19,31 +19,12 @@ import { useState } from 'react';
 
 import { getByCountryCode } from '@cloudflare-example/countries';
 
+import { handleError } from './utils/handler';
 import { useIncrementMutation, useSelfQuery } from './utils/query';
 import type { CountryData } from './utils/query';
 
 export const App = () => {
     const toast = useToast({ position: 'bottom', isClosable: true });
-
-    const handleError = (error: unknown) => {
-        const description = error instanceof Error ? error.message : 'An unknown error occurred.';
-
-        if (description.includes('rate limited')) {
-            toast({
-                title: 'Rate limited!',
-                description: 'Go slower! Wait a bit and try again.',
-                status: 'warning',
-            });
-            return;
-        }
-
-        toast({
-            title: 'Error',
-            description,
-            status: 'error',
-        });
-    };
-
     const [leaderboard, setLeaderboard] = useState<Map<string, CountryData> | null>(null);
     const [selfData, setSelfData] = useState<CountryData | null>(null);
 
@@ -54,6 +35,7 @@ export const App = () => {
                 new Map(leaderboard.map((country) => [country.country_code, country] as const))
             );
         },
+        onError: (err) => handleError(err, toast),
     });
 
     const { mutate: increment, isLoading: incrementMutationIsLoading } = useIncrementMutation({
@@ -68,7 +50,7 @@ export const App = () => {
             });
             setLeaderboard(newLeaderboard);
         },
-        onError: handleError,
+        onError: (err) => handleError(err, toast),
     });
 
     return (
