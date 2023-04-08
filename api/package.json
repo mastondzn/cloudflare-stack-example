@@ -7,9 +7,9 @@
         "lint:fix": "eslint . --fix",
         "db:generate": "drizzle-kit generate:sqlite",
         "db:up": "drizzle-kit up:sqlite",
-        "db:init": "wrangler d1 execute CF_STACK_EXAMPLE --file=./migrations/0000_curly_leopardon.sql",
+        "db:init": "wrangler d1 execute CF_STACK_EXAMPLE --file=./migrations/0000_modern_mojo.sql",
+        "local:db:init": "wrangler d1 execute CF_STACK_EXAMPLE --file=./migrations/0000_modern_mojo.sql --local",
         "dev": "wrangler dev --local --persist",
-        "local:db:init": "wrangler d1 execute CF_STACK_EXAMPLE --file=./migrations/0000_curly_leopardon.sql --local",
         "typecheck": "tsc --noEmit"
     },
     "devDependencies": {

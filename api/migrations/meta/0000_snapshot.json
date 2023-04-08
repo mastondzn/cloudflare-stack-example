@@ -1,14 +1,14 @@
 {
   "version": "5",
   "dialect": "sqlite",
-  "id": "a6bb7797-5785-49cc-9c1f-e4458ba89d44",
+  "id": "6221a492-dbe4-44fb-ac00-d64bbdb3c0a7",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "countries": {
       "name": "countries",
       "columns": {
-        "country_name": {
-          "name": "country_name",
+        "countryCode": {
+          "name": "countryCode",
           "type": "text",
           "primaryKey": true,
           "notNull": true
