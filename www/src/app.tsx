@@ -51,10 +51,16 @@ export const App = () => {
                 return;
             }
 
+            // wutface
             setLeaderboard(
-                [...leaderboard].map((country) =>
-                    country.countryCode === countryCode ? { countryCode, count } : country
+                (hasCurrentCountry
+                    ? [...leaderboard, { count, countryCode }]
+                    : [...leaderboard].map((country) =>
+                          country.countryCode === countryCode ? { countryCode, count } : country
+                      )
                 )
+                    .sort((a, b) => b.count - a.count)
+                    .slice(0, 10)
             );
         },
         onError: (err) => handleError(err, toast),
@@ -88,7 +94,7 @@ export const App = () => {
                                     </Tr>
                                 </Thead>
                                 <Tbody>
-                                    {[...leaderboard.values()].map(({ count, countryCode }) => (
+                                    {leaderboard.map(({ count, countryCode }) => (
                                         <Tr key={countryCode}>
                                             <Td>{getByCountryCode(countryCode)}</Td>
                                             <Td isNumeric={true}>{count}</Td>
