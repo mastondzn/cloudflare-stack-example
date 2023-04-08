@@ -20,35 +20,42 @@ import { useState } from 'react';
 import { getByCountryCode } from '@cloudflare-example/countries';
 
 import { handleError } from './utils/handler';
-import { useIncrementMutation, useSelfQuery } from './utils/query';
-import type { CountryData } from './utils/query';
+import {
+    type CountryData,
+    type Leaderboard,
+    useIncrementMutation,
+    useSelfQuery,
+} from './utils/query';
 
 export const App = () => {
     const toast = useToast({ position: 'bottom', isClosable: true });
-    const [leaderboard, setLeaderboard] = useState<Map<string, CountryData> | null>(null);
+    const [leaderboard, setLeaderboard] = useState<Leaderboard | null>(null);
     const [selfData, setSelfData] = useState<CountryData | null>(null);
 
     useSelfQuery({
         onSuccess: ({ self, leaderboard }) => {
             setSelfData(self);
-            setLeaderboard(
-                new Map(leaderboard.map((country) => [country.country_code, country] as const))
-            );
+            setLeaderboard(leaderboard);
         },
         onError: (err) => handleError(err, toast),
     });
 
     const { mutate: increment, isLoading: incrementMutationIsLoading } = useIncrementMutation({
-        onSuccess: ({ count, country_code }) => {
-            setSelfData({ count, country_code });
-            if (!(leaderboard instanceof Map) || !leaderboard.has(country_code)) return;
+        onSuccess: ({ count, countryCode }) => {
+            setSelfData({ count, countryCode });
 
-            const newLeaderboard = new Map(leaderboard);
-            newLeaderboard.set(country_code, {
-                country_code,
-                count,
-            });
-            setLeaderboard(newLeaderboard);
+            const hasCurrentCountry =
+                leaderboard && leaderboard.some((country) => country.countryCode < countryCode);
+
+            if (!leaderboard || !(leaderboard.length < 10 || hasCurrentCountry)) {
+                return;
+            }
+
+            setLeaderboard(
+                [...leaderboard].map((country) =>
+                    country.countryCode === countryCode ? { countryCode, count } : country
+                )
+            );
         },
         onError: (err) => handleError(err, toast),
     });
@@ -59,7 +66,7 @@ export const App = () => {
                 {selfData && leaderboard ? (
                     <>
                         <Text fontWeight="semibold" fontSize="lg">{`Country ${getByCountryCode(
-                            selfData.country_code
+                            selfData.countryCode
                         )} has a count of ${selfData.count}!`}</Text>
                         <Button
                             size="lg"
@@ -81,9 +88,9 @@ export const App = () => {
                                     </Tr>
                                 </Thead>
                                 <Tbody>
-                                    {[...leaderboard.values()].map(({ count, country_code }) => (
-                                        <Tr key={country_code}>
-                                            <Td>{getByCountryCode(country_code)}</Td>
+                                    {[...leaderboard.values()].map(({ count, countryCode }) => (
+                                        <Tr key={countryCode}>
+                                            <Td>{getByCountryCode(countryCode)}</Td>
                                             <Td isNumeric={true}>{count}</Td>
                                         </Tr>
                                     ))}

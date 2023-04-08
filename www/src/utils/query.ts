@@ -3,7 +3,7 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 const apiBaseUrl = import.meta.env.DEV ? 'http://127.0.0.1:8787' : 'https://cf-example.synopsis.gg';
 
 export type CountryData = {
-    country_code: string;
+    countryCode: string;
     count: number;
 };
 
@@ -47,7 +47,7 @@ export const useIncrementMutation = (options?: {
 
             const data = (await res.json()) as CountryData | { error: string };
 
-            if (res.ok && 'country_code' in data) {
+            if (res.ok && 'countryCode' in data) {
                 return data;
             }
 

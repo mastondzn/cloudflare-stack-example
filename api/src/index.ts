@@ -67,7 +67,7 @@ app.get('/api/self', async (ctx) => {
     }
 
     if (!countryData) {
-        countryData = { country_code: countryCode, count: 0 };
+        countryData = { countryCode, count: 0 };
     }
 
     return ctx.json({ self: countryData, leaderboard: leaderboardData });
@@ -82,12 +82,12 @@ app.get('/api/increment', async (ctx) => {
     if (!data) {
         await db.insertCountry(countryCode);
         await db.setCount(countryCode, 1);
-        return ctx.json({ country_code: countryCode, count: 1 });
+        return ctx.json({ countryCode, count: 1 });
     }
 
     await db.setCount(countryCode, data.count + 1);
 
-    return ctx.json({ country_code: countryCode, count: data.count + 1 });
+    return ctx.json({ countryCode, count: data.count + 1 });
 });
 
 export default app;
